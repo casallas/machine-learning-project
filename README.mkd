@@ -1,19 +1,51 @@
-# CS 573
-## Class Project
+# CS 573 - Class Project
+##  Intention Prediction in Virtual Reality
 
 Juan Sebastian Casallas, Ashwin S. Natarajan, Keji Hu
 
-INTRODUCTION
-Virtual Reality (VR) has seen a growth in popularity with its use in a wide variety of disciplines, such as 3D mockup, simulation, training and, of course, gaming. Advances in computing have allowed VR applications to become increasingly realistic, but yet some problems as lag –the delay between a user action and the corresponding system reaction– and jitter –the noise produced by input interfaces like a hand tracker– demand workarounds or “tricks” to achieve this apparent realism. Furthermore, the unnaturalness of certain interfaces may be confusing or even sickening for its users, impeding them from achieving the optimal performance that they would achieve in the real world.
-Conversely, VR is free of some of the limitations that exist in the real world, thus allowing to create applications that would be unimaginable (or too expensive) outside a virtual world. In an interactive virtual environment (VE), for example, users may always be (at least partially) tracked using one or more sensors. In this project, we propose that using this knowledge may help us anticipate what the next user action will be and how it will be executed.
-TASK
+### Introduction
+Virtual Reality (VR) is free of some of the limitations that exist in the real world, thus allowing to create applications that would be unimaginable (or too expensive) outside a virtual world. In an interactive virtual environment (VE), for example, users may always be (at least partially) tracked using one or more sensors. In this project, we propose that using this knowledge may help us anticipate what the next user action will be and how it will be executed.
+
+### Task
 The proposed task is a 3D game in which the user has multiple objects flying towards him and his goal is to touch each of the objects with his hand to make them disappear, each object that gets past him makes the user lose points. The user has both a hand and a hand tracker, which give position and orientation at all times.
- 
-FIGURE 1. PROPOSED TASK SETUP, THE USER, WITH A HAND (PURPLE) AND A HEAD (GREEN) TRACKER MUST TOUCH EACH OF THE INCOMING (RED) OBJECTS TO MAKE THEM DISAPPEAR, BEFORE THEY REACH HIM.
-METHOD
+
+<img src="https://github.com/jscasallas/machine-learning-project/raw/master/doc/img/task_sketch.png" height="40%" width="40%"/>
+
+> Figure 1. Proposed Task Setup, the subject, with a hand (purple) and a head (green) tracker, must touch each of the incoming (red) objects to make them disappear before they reach him.
+
+### Method
+
 Given the information from the user’s head and hand pose (position and orientation), as well as the object trajectories, we propose to predict which object the user will reach next and the trajectory to reach that object. First, we can model the states of user action as choose (C) and reach (R). During the choose state, the inputs are the head pose, the hand position and the object poses and sizes (for simplicity we will use spherical targets); the output is the target object. During the reach state, the input is the target object’s pose and size, and the head and hand poses; the output is the trajectory and time to reach the object.
-Since there are probabilities of error, or of “regret”, the user can pass from C to C, from R to R, from C to R, or from R to C, without necessarily getting the desired outputs. Since we don’t know exactly in what state the user is, this can be modeled in a 2-state Hidden Markov Chain. In the R state, the user trajectory can be predicted using a Kalman Filter, a Particle Filter, or a K-NN, based on training samples.
+
+Since there are probabilities of error, or of “regret”, the user can pass from C to C, from R to R, from C to R, or from R to C, without necessarily getting the desired outputs. Also, because we don’t know exactly in what state the user is, this can be modeled in a 2-state Hidden Markov Chain. In the R state, the user trajectory can be predicted using a Kalman Filter, a Particle Filter, or a K-NN, based on training samples.
  
-FIGURE 2. HIDDEN MARKOV CHAIN REPRESENTING THE CHOOSE (C) STATE AND THE REACH (R) STATE.
-TEST AND VALIDATION
+![2-State HMM representing choose and Reach](https://github.com/jscasallas/machine-learning-project/raw/master/doc/img/hmm.png)
+> Figure 2. Hidden Markov Model representing the Choose (C) state and the Reach (R) state.
+
+### Test and Validation
+
 Although this type of prediction would be useful on-line (i.e. while the user is interacting with the VE), we only want to prove that the approach is feasible and “promising”, so instead, an offline cross validation of the data will be made. We will get our data from 5 subjects, who will do the task until they hit 20 targets each. The application will be developed in VR Juggler and deployed in a human size (CaVE-like) virtual environment.
+
+## Object selection prediction
+
+Since we are doing our analyses _post hoc_, we can always know, at any moment in time, which object will the subject end up reaching. Therefore, we can have the following attributes at each moment in time:
+
+num-objects, object1.size, ..., objectn.size, object1.position, ..., objectn.position, object1.orientation, ... objectn.orientation,  object1.speed, ..., objectn.speed, head.position, head.orientation, hand.position, hand.orientation, chosen-object
+
+Here num-objects is the number of objects in the scene (n), and chosen-object is the object that the subject ends up reaching for, it can be a number from 1 to n.
+
+## VR code
+
+The virtual reality part of the project can be found in de `vr/` folder, along with its source `vr/src` and external dependencies `vr/ext`. Please see the readme inside the VR folder for details on the vr-application.
+
+## Data
+
+The collected data can be found in the `/data` folder.
+
+## ML code
+
+The machine learning code and instructions can be found in the `ml/` folder.
+
+## Documentation
+
+Further documentation can be found in the `doc/` folder. 
