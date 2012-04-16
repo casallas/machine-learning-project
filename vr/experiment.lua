@@ -7,6 +7,7 @@ vrjLua.appendToModelSearchPath(fn)
 
 dofile(vrjLua.findInModelSearchPath([[skydome.lua]]))
 dofile(vrjLua.findInModelSearchPath([[magicWand.lua]]))
+dofile(vrjLua.findInModelSearchPath([[osgXUtils.lua]]))
 
 -- Create a bunch of spheres
 numSpheres = 3
@@ -80,12 +81,16 @@ end
 -- Adds the corresponding spheres to the sphere row
 function displayRandExpCondition()
 	local curExpCondition = getRandomExpCondition()
+	-- Create a red material for all the spheres
+	local material = createColoredMaterial(osg.Vec4(1.0,0,0,0))
 	for i=1,numSpheres do
 		local curX = ((maxSeparation/(numSpheres-1))*(i-1))-maxSeparation/2
 		local curRad = curExpCondition[i]
 		local s = Sphere{position={curX,0,0}, radius=curRad}
 		-- Each sphere's name: i_radius_curX
 		s:setName(tostring(i).."_"..tostring(curRad).."_"..tostring(curX))
+		-- Give the spheres a material
+		s:getOrCreateStateSet():setAttribute(material)
 		sphereRow:addChild(s)
 	end
 	curExpCondition["repetitions"] = curExpCondition["repetitions"] - 1
