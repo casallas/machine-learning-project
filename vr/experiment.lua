@@ -187,8 +187,6 @@ function runExperiment(dt)
 	end
 end
 
-Actions.addFrameAction(runExperiment)
-
 function serializeExpConditions()
 	local ans = ""
 	for k,v in pairs(expConditions) do
@@ -241,6 +239,29 @@ function writeLog(dt)
 	log_file:close()
 end
 
-Actions.addFrameAction(writeLog)
+function startExperiment(dt)
+	local btn1 = gadget.DigitalInterface("VJButton1")
+	while not btn1.pressed do
+		Actions.waitForRedraw()
+	end
+	numSpheres = 1
+	sphereSpeed = osg.Vec3d(0,0,2)
+	createExperimentalConditions()
+	Actions.addFrameAction(writeLog)
+	runExperiment()
+	print("1 sphere ended")
+	sphereRow:removeChildren(0, sphereRow:getNumChildren())
+	Actions.removeFrameAction(writeLog)
+	while not btn1.pressed do
+		Actions.waitForRedraw()
+	end
+	numSpheres = 2
+	sphereSpeed = osg.Vec3d(0,0,1.5)
+	createExperimentalConditions()
+	Actions.addFrameAction(writeLog)
+	runExperiment()
+	print("2 spheres ended")
+	sphereRow:removeChildren(0, sphereRow:getNumChildren())
+end
 
-
+Actions.addFrameAction(startExperiment)
