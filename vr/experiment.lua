@@ -12,17 +12,19 @@ dofile(vrjLua.findInModelSearchPath([[osgXUtils.lua]]))
 -- Create a bunch of spheres
 numSpheres = 3
 -- Sphere radii
-radii = { 0.20, 0.10, 0.05}
+radii = { 0.2, 0.1, 0.05}
 -- Initial position of the spheres 1mt high, 5 mt in front
-initialPos = osg.Vec3d(0,1,-5)
+--initialPos = osg.Vec3d(0,1,-5)
+--metal
+initialPos = osg.Vec3d(2,1.5,-5)
 
 -- Number of repetitions
-numRepetitions = 20
+numRepetitions = 10
 
 -- Spheres shouldn't be more than 1.5 mt appart from each other
-maxSeparation = 1.5
+maxSeparation = 1
 -- Sphere speed, advance in -z
-sphereSpeed = osg.Vec3d(0,0,1.0)
+sphereSpeed = osg.Vec3d(0,0,1.5)
 
 -- Create experimental conditions, a full nxnxn experiment
 -- The experimental condition table will look like radius1, radius2, radius3, repetitions
@@ -196,6 +198,7 @@ function serializeExpConditions()
 		end
 		ans = ans.."\n"
 	end
+	ans = ans.."speed"..tostring(sphereSpeed).."\n"
 	return ans
 end
 
