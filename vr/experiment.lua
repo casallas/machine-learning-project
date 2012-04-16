@@ -27,10 +27,24 @@ sphereSpeed = osg.Vec3d(0,0,1.0)
 -- Create experimental conditions, a full nxnxn experiment
 -- The experimental condition table will look like radius1, radius2, radius3, repetitions
 expConditions = {}
-for r1 = 1,numSpheres do 
-	for r2 = 1,numSpheres do
-		for r3 = 1,numSpheres do
-			table.insert( expConditions, {radii[r1],radii[r2],radii[r3],repetitions=numRepetitions} )
+function createExperimentalConditions()
+	expConditions = {}
+	if numSpheres == 1 then
+		table.insert( expConditions, {radii[1],repetitions=numRepetitions} )
+		table.insert( expConditions, {radii[2],repetitions=numRepetitions} )
+	elseif numSpheres == 2 then
+		for r1 = 1,numSpheres do
+			for r2 = 1,numSpheres do
+				table.insert( expConditions, {radii[r1],radii[r2],repetitions=numRepetitions} )
+			end
+		end
+	else
+		for r1 = 1,numSpheres do
+			for r2 = 1,numSpheres do
+				for r3 = 1,numSpheres do
+					table.insert( expConditions, {radii[r1],radii[r2],radii[r3],repetitions=numRepetitions} )
+				end
+			end
 		end
 	end
 end
@@ -51,7 +65,7 @@ end
 -- else it will loop infinitely, for safety, call repetitionsRemaining before
 function getRandomExpCondition()
 	while true do
-		local index = math.random(numSpheres)
+		local index = math.random(#expConditions)
 		if expConditions[index]["repetitions"] > 0 then
 			print("condition",index)
 			return expConditions[index]
@@ -85,6 +99,8 @@ function displayRandExpCondition()
 	local material = createColoredMaterial(osg.Vec4(1.0,0,0,0))
 	for i=1,numSpheres do
 		local curX = ((maxSeparation/(numSpheres-1))*(i-1))-maxSeparation/2
+		-- one sphere is a special case, we want it in the middle
+		if numSpheres == 1 then curX = 0 end
 		local curRad = curExpCondition[i]
 		local s = Sphere{position={curX,0,0}, radius=curRad}
 		-- Each sphere's name: i_radius
