@@ -87,8 +87,8 @@ function displayRandExpCondition()
 		local curX = ((maxSeparation/(numSpheres-1))*(i-1))-maxSeparation/2
 		local curRad = curExpCondition[i]
 		local s = Sphere{position={curX,0,0}, radius=curRad}
-		-- Each sphere's name: i_radius_curX
-		s:setName(tostring(i).."_"..tostring(curRad).."_"..tostring(curX))
+		-- Each sphere's name: i_radius
+		s:setName(tostring(i).."_"..tostring(curRad))
 		-- Give the spheres a material
 		s:getOrCreateStateSet():setAttribute(material)
 		sphereRow:addChild(s)
@@ -215,7 +215,8 @@ function writeLog(dt)
 		for i=1,sphereRow:getNumChildren() do
 			log_file:write(",")
 			-- On osg, indexes start in zero...
-			log_file:write(sphereRow:getChild(i-1):getName())
+			log_file:write(sphereRow:getChild(i-1):getName().."_")
+			log_file:write(tostring(spherePos(sphereRow:getChild(i-1))))
 		end
 		log_file:write("\n")
 		-- wait for 1/10 of a second
