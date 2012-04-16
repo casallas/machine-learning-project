@@ -1,4 +1,11 @@
 require("Actions")
+-- Look for models in the same directory as this file.
+require("getScriptFilename")
+fn = getScriptFilename()
+assert(fn, "Have to load this from file, not copy and paste, or we can't find our scripts!")
+vrjLua.appendToModelSearchPath(fn)
+
+dofile(vrjLua.findInModelSearchPath([[skydome.lua]]))
 
 -- Create a bunch of spheres
 numSpheres = 3

@@ -4,6 +4,9 @@ fn = getScriptFilename()
 assert(fn, "Have to load this from file, not copy and paste, or we can't find our models!")
 vrjLua.appendToModelSearchPath(fn)
 
+-- Add simple lights
+dofile(vrjLua.findInModelSearchPath([[simpleLights.lua]]))
+
 -- Skydome model transform, we need this to rotate -90 on x, and shift it up 2m
 skydomeXform = Transform{
 	position = {0, 2, 0},
