@@ -26,25 +26,39 @@ maxSeparation = 1
 -- Sphere speed, advance in -z
 sphereSpeed = osg.Vec3d(0,0,1.5)
 
+positions = { "left", "center", "right" }
+
 -- Create experimental conditions, a full nxnxn experiment
 -- The experimental condition table will look like radius1, radius2, radius3, repetitions
 expConditions = {}
 function createExperimentalConditions()
 	expConditions = {}
 	if numSpheres == 1 then
-		table.insert( expConditions, {radii[1],repetitions=numRepetitions} )
-		table.insert( expConditions, {radii[2],repetitions=numRepetitions} )
+		for pos = 1,#positions do
+			table.insert( expConditions, {radii[1],position=positions[pos],
+				repetitions=numRepetitions} )
+			table.insert( expConditions, {radii[2],position=positions[pos],
+				repetitions=numRepetitions} )
+		end
 	elseif numSpheres == 2 then
 		for r1 = 1,numSpheres do
 			for r2 = 1,numSpheres do
-				table.insert( expConditions, {radii[r1],radii[r2],repetitions=numRepetitions} )
+				for pos = 1,#positions do
+					table.insert( expConditions, {radii[r1],radii[r2],
+						position=positions[pos],
+						repetitions=numRepetitions} )
+				end
 			end
 		end
 	else
 		for r1 = 1,numSpheres do
 			for r2 = 1,numSpheres do
 				for r3 = 1,numSpheres do
-					table.insert( expConditions, {radii[r1],radii[r2],radii[r3],repetitions=numRepetitions} )
+					for pos = 1,#positions do
+						table.insert( expConditions, {radii[r1],radii[r2],radii[r3],
+							position=positions[pos],
+							repetitions=numRepetitions} )
+					end
 				end
 			end
 		end
@@ -99,10 +113,19 @@ function displayRandExpCondition()
 	local curExpCondition = getRandomExpCondition()
 	-- Create a red material for all the spheres
 	local material = createColoredMaterial(osg.Vec4(1.0,0,0,0))
+	print(curExpCondition["position"])
 	for i=1,numSpheres do
-		local curX = ((maxSeparation/(numSpheres-1))*(i-1))-maxSeparation/2
-		-- one sphere is a special case, we want it in the middle
-		if numSpheres == 1 then curX = 0 end
+		local curX = ((maxSeparation/(numSpheres-1))*(i-1))
+		-- one sphere is a special case, we want it in the left
+		if numSpheres == 1 then curX = maxSeparation/2 end
+
+		-- spheres start on the right, adjust for center and left
+		if curExpCondition["position"] == "center" then
+			curX = curX - maxSeparation/2
+		elseif curExpCondition["position"] == "left" then
+			curX = curX - maxSeparation
+		end
+
 		local curRad = curExpCondition[i]
 		local s = Sphere{position={curX,0,0}, radius=curRad}
 		-- Each sphere's name: i_radius
