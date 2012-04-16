@@ -6,6 +6,7 @@ assert(fn, "Have to load this from file, not copy and paste, or we can't find ou
 vrjLua.appendToModelSearchPath(fn)
 
 dofile(vrjLua.findInModelSearchPath([[skydome.lua]]))
+dofile(vrjLua.findInModelSearchPath([[magicWand.lua]]))
 
 -- Create a bunch of spheres
 numSpheres = 3
@@ -90,18 +91,30 @@ function displayRandExpCondition()
 	curExpCondition["repetitions"] = curExpCondition["repetitions"] - 1
 end
 
--- Tells if a point is inside an osg node
-function pointInside(point,node)
-	local bSphere = sphereRow:getBound()
-	-- convert the center to Vec3d, since it's originally Vec3f TODO fixme
-	local bCenter = osg.Vec3d(bSphere:center())
-	local center2Point = point - bCenter
+function spherePos(sphere)
+	-- TODO check why the world matrix isn't working
+	local bSphere = sphere:getBound()
+	-- Start constructing the matrix with the identity
+	local sphereWXform = osg.Matrix.identity()
+	-- Now premultiply the sphere's parent's rotation
+	sphereWXform:preMultRotate(sphere:getParent(0):getAttitude())
+	-- Now premultiply the sphere's parent's position
+	sphereWXform:preMultTranslate(sphere:getParent(0):getPosition())
+	-- Finally translate to the tip of the sphere
+	sphereWXform:preMultTranslate(bSphere:center())
+	return sphereWXform.Trans
+end
+
+-- Tells if a point is inside one of the spheres
+function pointInsideSphere(point,sphere)
+	local sphCenter = spherePos(sphere)
+	local center2Point = point - sphCenter
 	-- get the square length
 	local c2w_len2 = center2Point:length2()
 	-- get the square radius
-	local sqradius = bSphere:radius2()
+	local sqradius = sphere:getBound():radius2()
 	-- Apparently the square radius of the bound is overshoot by 3
-	return c2w_len2 < sqradius/3
+	return c2w_len2 < sqradius--/3
 end
 
 lastRemoved = 0
@@ -113,8 +126,7 @@ function disappearCollidedSpheres(wandPos)
 	for i=1,numChildren do
 		-- osg's children indexes are zero based
 		local curSphere = sphereRow:getChild(i-1)
-
-		if pointInside(wandPos,curSphere) then
+		if pointInsideSphere(wandPos,curSphere) then
 			sphereRow:removeChild(curSphere)
 			lastRemoved = i
 			return true
@@ -142,7 +154,7 @@ function runExperiment(dt)
 		worldHeadPos = head.position - osgnav.position
 		worldWandPos = wand.position - osgnav.position
 		if not trialEnded(worldHeadPos) then
-			disappearCollidedSpheres(worldWandPos)
+			disappearCollidedSpheres(magicWand:getTipPos())
 			moveSpheres(dt)
 		else
 			print("New trial")
