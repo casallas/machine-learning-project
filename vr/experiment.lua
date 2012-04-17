@@ -195,6 +195,19 @@ end
 -- We attach it relative to the world: we can move around it.
 RelativeTo.World:addChild(sphereRow)
 
+centerIsle = Cylinder{position={0,0,0},height = 0.1,radius = 0.5}
+isleXform = Transform{
+	--position={initialPos:x(),0,0},
+	-- METaL
+	position={initialPos:x(),0,1.5},
+	-- set the transform orientation to -90 on the x (first element of Axis values)
+	orientation = AngleAxis(Degrees(-90), Axis{1.0, 0.0, 0.0}),
+}
+--isleMaterial = createColoredMaterial(osg.Vec4(1.0,1.0,1.0,0.0))
+--centerIsle:getOrCreateStateSet():setAttribute(isleMaterial)
+isleXform:addChild(centerIsle)
+RelativeTo.Room:addChild(isleXform)
+
 function runExperiment(dt)
 	local missed = 0
 	local head = gadget.PositionInterface("VJHead")
