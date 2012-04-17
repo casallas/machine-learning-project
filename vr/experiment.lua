@@ -51,10 +51,11 @@ function createExperimentalConditions()
 				end
 			end
 		end
+	-- for 3 spheres do a 2^3 experiment, not 3^3
 	else
-		for r1 = 1,numSpheres do
-			for r2 = 1,numSpheres do
-				for r3 = 1,numSpheres do
+		for r1 = 1,numSpheres-1 do
+			for r2 = 1,numSpheres-1 do
+				for r3 = 1,numSpheres-1 do
 					for pos = 1,#positions do
 						table.insert( expConditions, {radii[r1],radii[r2],radii[r3],
 							position=positions[pos],
@@ -241,6 +242,25 @@ function startExperiment(dt)
 	runExperiment()
 	logEntry("2_spheres_ended")
 	sphereRow:removeChildren(0, sphereRow:getNumChildren())
+
+	-- Don't vary position for 3 spheres
+	positions = { "center" }
+	Actions.removeFrameAction(writeLog)
+	while not btn1.pressed do
+		Actions.waitForRedraw()
+	end
+	numSpheres = 3
+	sphereSpeed = osg.Vec3d(0,0,1.5)
+	createExperimentalConditions()
+	Actions.addFrameAction(writeLog)
+	-- give the log the chance to start
+	Actions.waitForRedraw()
+	runExperiment()
+	logEntry("3_spheres_ended")
+	sphereRow:removeChildren(0, sphereRow:getNumChildren())
+
+	-- Return to initial values
+	positions = { "left", "center", "right" }
 end
 
 Actions.addFrameAction(startExperiment)
