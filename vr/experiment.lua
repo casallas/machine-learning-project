@@ -8,6 +8,7 @@ vrjLua.appendToModelSearchPath(fn)
 dofile(vrjLua.findInModelSearchPath([[skydome.lua]]))
 dofile(vrjLua.findInModelSearchPath([[magicWand.lua]]))
 dofile(vrjLua.findInModelSearchPath([[osgXUtils.lua]]))
+dofile(vrjLua.findInModelSearchPath([[log.lua]]))
 
 -- Create a bunch of spheres
 numSpheres = 3
@@ -83,7 +84,7 @@ function getRandomExpCondition()
 	while true do
 		local index = math.random(#expConditions)
 		if expConditions[index]["repetitions"] > 0 then
-			print("condition",index)
+			logEntry("condition="..tostring(index))
 			return expConditions[index]
 		end
 	end
@@ -97,10 +98,10 @@ sphereRow = Transform{
 -- A trial is ended if the objects are behind the head (in z), or if there are no children in the row
 function trialEnded(headPos)
 	if sphereRow:getNumChildren() <= 0 then
-		print("no more spheres on trial")
+		logEntry("no_more_spheres")
 		return true
 	elseif sphereRow:getPosition():z() > headPos:z() then
-		print("balls bypassed user")
+		logEntry("balls_bypassed_user")
 		return true		
 	else
 		return false
@@ -113,7 +114,6 @@ function displayRandExpCondition()
 	local curExpCondition = getRandomExpCondition()
 	-- Create a red material for all the spheres
 	local material = createColoredMaterial(osg.Vec4(1.0,0,0,0))
-	print(curExpCondition["position"])
 	for i=1,numSpheres do
 		local curX = ((maxSeparation/(numSpheres-1))*(i-1))
 		-- one sphere is a special case, we want it in the left
@@ -173,6 +173,7 @@ function disappearCollidedSpheres(wandPos)
 		-- osg's children indexes are zero based
 		local curSphere = sphereRow:getChild(i-1)
 		if pointInsideSphere(wandPos,curSphere) then
+			logEntry("collision sphere="..curSphere:getName())
 			sphereRow:removeChild(curSphere)
 			lastRemoved = i
 			return true
@@ -203,66 +204,13 @@ function runExperiment(dt)
 			disappearCollidedSpheres(magicWand:getTipPos())
 			moveSpheres(dt)
 		else
-			print("New trial")
+			logEntry("new_trial")
 			sphereRow:removeChildren(0, sphereRow:getNumChildren())
 			sphereRow:setPosition(initialPos)
 			displayRandExpCondition()
 		end
 		dt = Actions.waitForRedraw()
 	end
-end
-
-function serializeExpConditions()
-	local ans = ""
-	for k,v in pairs(expConditions) do
-		ans  = ans..tostring(k)
-		for k2,v2 in pairs(v) do
-			ans = ans..","..v2
-		end
-		ans = ans.."\n"
-	end
-	ans = ans.."speed"..tostring(sphereSpeed).."\n"
-	return ans
-end
-
-function writeLog(dt)
-	local file_name = tostring(os.time().."_log.txt")
-	local log_file = io.open(file_name,"w")
-	
-	log_file:write("<experimental_conditions>\n")
-	log_file:write("condition_num,radius1,radius2,radius3,repetitions\n")
-	log_file:write(serializeExpConditions())
-	log_file:write("</experimental_conditions>\n")
-
-	log_file:write("<experimental_data>\n")
-	log_file:write("time,headPos,headOri,wandPos,wandOri,numSpheres,sphere1,sphere2,sphere3\n")
-
-	local head = gadget.PositionInterface("VJHead")
-	local wand = gadget.PositionInterface("VJWand")
-
-	while repetitionsRemaining() do
-		log_file:write(dt)
-		log_file:write(",")
-		log_file:write(tostring(head.position))
-		log_file:write(",")
-		log_file:write(tostring(head.orientation))
-		log_file:write(",")
-		log_file:write(tostring(wand.position))
-		log_file:write(",")
-		log_file:write(tostring(wand.orientation))
-		log_file:write(",")
-		log_file:write(sphereRow:getNumChildren())
-		for i=1,sphereRow:getNumChildren() do
-			log_file:write(",")
-			-- On osg, indexes start in zero...
-			log_file:write(sphereRow:getChild(i-1):getName().."_")
-			log_file:write(tostring(spherePos(sphereRow:getChild(i-1))))
-		end
-		log_file:write("\n")
-		-- wait for 1/10 of a second
-		dt = Actions.waitSeconds(0.1)
-	end
-	log_file:close()
 end
 
 function startExperiment(dt)
@@ -274,9 +222,12 @@ function startExperiment(dt)
 	sphereSpeed = osg.Vec3d(0,0,2)
 	createExperimentalConditions()
 	Actions.addFrameAction(writeLog)
+	-- give the log the chance to start
+	Actions.waitForRedraw()
 	runExperiment()
-	print("1 sphere ended")
+	logEntry("1_sphere_ended")
 	sphereRow:removeChildren(0, sphereRow:getNumChildren())
+
 	Actions.removeFrameAction(writeLog)
 	while not btn1.pressed do
 		Actions.waitForRedraw()
@@ -285,8 +236,10 @@ function startExperiment(dt)
 	sphereSpeed = osg.Vec3d(0,0,1.5)
 	createExperimentalConditions()
 	Actions.addFrameAction(writeLog)
+	-- give the log the chance to start
+	Actions.waitForRedraw()
 	runExperiment()
-	print("2 spheres ended")
+	logEntry("2_spheres_ended")
 	sphereRow:removeChildren(0, sphereRow:getNumChildren())
 end
 
