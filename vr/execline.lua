@@ -1,0 +1,5 @@
+--Copy the following line to the console to run the experiment
+--METaL
+--dofile([[H:/machine-learning-project/vr/experiment.lua]])
+--mac
+--dofile([[/Volumes/casallas/machine-learning-project/vr/experiment.lua]])
