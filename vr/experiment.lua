@@ -9,6 +9,7 @@ dofile(vrjLua.findInModelSearchPath([[skydome.lua]]))
 dofile(vrjLua.findInModelSearchPath([[magicWand.lua]]))
 dofile(vrjLua.findInModelSearchPath([[osgXUtils.lua]]))
 dofile(vrjLua.findInModelSearchPath([[log.lua]]))
+dofile(vrjLua.findInModelSearchPath([[hud.lua]]))
 
 -- Create a bunch of spheres
 numSpheres = 3
@@ -195,6 +196,7 @@ end
 RelativeTo.World:addChild(sphereRow)
 
 function runExperiment(dt)
+	local missed = 0
 	local head = gadget.PositionInterface("VJHead")
 	local wand = gadget.PositionInterface("VJWand")
 
@@ -204,9 +206,13 @@ function runExperiment(dt)
 		if not trialEnded(worldHeadPos) then
 			disappearCollidedSpheres(magicWand:getTipPos())
 			moveSpheres(dt)
+			displayHUD("missed: "..tostring(missed),osg.Vec3d(2,0.5,initialPos:z()))
 		else
 			logEntry("new_trial")
+			-- Increment the number of missed (this is just for fun)
+			missed = missed + sphereRow:getNumChildren()
 			sphereRow:removeChildren(0, sphereRow:getNumChildren())
+			--initialPos:x() = worldHeadPos:x()
 			sphereRow:setPosition(initialPos)
 			displayRandExpCondition()
 		end
@@ -216,9 +222,11 @@ end
 
 function startExperiment(dt)
 	local btn1 = gadget.DigitalInterface("VJButton1")
+	displayHUD("Get on the isle and\nPress rear button to start!",initialPos)
 	while not btn1.pressed do
 		Actions.waitForRedraw()
 	end
+	clearHUD()
 	numSpheres = 1
 	sphereSpeed = osg.Vec3d(0,0,2)
 	createExperimentalConditions()
@@ -230,9 +238,11 @@ function startExperiment(dt)
 	sphereRow:removeChildren(0, sphereRow:getNumChildren())
 
 	Actions.removeFrameAction(writeLog)
+	displayHUD("Trial ended\nPress rear button to start!",initialPos)
 	while not btn1.pressed do
 		Actions.waitForRedraw()
 	end
+	clearHUD()
 	numSpheres = 2
 	sphereSpeed = osg.Vec3d(0,0,1.5)
 	createExperimentalConditions()
@@ -246,9 +256,11 @@ function startExperiment(dt)
 	-- Don't vary position for 3 spheres
 	positions = { "center" }
 	Actions.removeFrameAction(writeLog)
+	displayHUD("Trial ended\nPress rear button to start!",initialPos)
 	while not btn1.pressed do
 		Actions.waitForRedraw()
 	end
+	clearHUD()
 	numSpheres = 3
 	sphereSpeed = osg.Vec3d(0,0,1.5)
 	createExperimentalConditions()
@@ -258,6 +270,7 @@ function startExperiment(dt)
 	runExperiment()
 	logEntry("3_spheres_ended")
 	sphereRow:removeChildren(0, sphereRow:getNumChildren())
+	displayHUD("Trial ended, thanks!",initialPos)
 
 	-- Return to initial values
 	positions = { "left", "center", "right" }
