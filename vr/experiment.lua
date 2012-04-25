@@ -241,7 +241,9 @@ function startExperiment(dt)
 	end
 	clearHUD()
 	numSpheres = 1
-	sphereSpeed = osg.Vec3d(0,0,2)
+	-- Do only five repetitions for each condition
+	numRepetitions = 5
+	sphereSpeed = osg.Vec3d(0,0,2.5)
 	createExperimentalConditions()
 	Actions.addFrameAction(writeLog)
 	-- give the log the chance to start
@@ -257,7 +259,10 @@ function startExperiment(dt)
 	end
 	clearHUD()
 	numSpheres = 2
+	-- Do only five repetitions for each condition
 	sphereSpeed = osg.Vec3d(0,0,1.5)
+	-- Spheres shouldn't be more than 0.5 mt appart from each other
+	maxSeparation = 0.5
 	createExperimentalConditions()
 	Actions.addFrameAction(writeLog)
 	-- give the log the chance to start
@@ -276,6 +281,8 @@ function startExperiment(dt)
 	clearHUD()
 	numSpheres = 3
 	sphereSpeed = osg.Vec3d(0,0,1.5)
+	-- Spheres shouldn't be more than 0.75 mt appart from each other
+	maxSeparation = 0.75
 	createExperimentalConditions()
 	Actions.addFrameAction(writeLog)
 	-- give the log the chance to start
