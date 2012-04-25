@@ -102,7 +102,7 @@ function trialEnded(headPos)
 	if sphereRow:getNumChildren() <= 0 then
 		logEntry("no_more_spheres")
 		return true
-	elseif sphereRow:getPosition():z() > headPos:z() then
+	elseif sphereRow:getPosition():z() > (headPos:z()+0.5) then
 		logEntry("balls_bypassed_user")
 		return true		
 	else
