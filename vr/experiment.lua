@@ -195,7 +195,7 @@ end
 -- We attach it relative to the world: we can move around it.
 RelativeTo.World:addChild(sphereRow)
 
-centerIsle = Cylinder{position={0,0,0},height = 0.1,radius = 0.5}
+centerIsle = Cylinder{position={0,0,0},height = 0.1,radius = 0.25}
 isleXform = Transform{
 	--position={initialPos:x(),0,0},
 	-- METaL
