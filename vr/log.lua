@@ -65,7 +65,7 @@ function writeLog(dt)
 		-- wait for 1/10 of a second
 		--dt = Actions.waitSeconds(0.1)
 	end
-	log_file:write("<experimental_data>\n")
+	log_file:write("</experimental_data>\n")
 	log_file:write("<end_time="..os.time().."/>")
 	log_file:close()
 	log_file = nil
