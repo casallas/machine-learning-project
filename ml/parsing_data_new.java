@@ -22,12 +22,14 @@ public class parsing_data_new {
 	private FileWriter fw;
 	private int lineNumber = 0;
 	private int numberOfTrials = 0;
+	private int[] collisionOrder;
 
 	public parsing_data_new(int numballs, FileWriter fw) {
 		// this.toParse = line;
 		ballPositionsandSizeData = "";
 		this.numballs = numballs;
 		collisions = new int[numballs];
+		collisionOrder = new int[numballs];
 		positions = new ArrayList<String>();
 		this.fw = fw;
 	}
@@ -37,7 +39,7 @@ public class parsing_data_new {
 		String str = time + "," + positions.get(0) + ","
 				+ positions.get(size / 3) + "," + positions.get(size / 2) + "," + ballPositionsandSizeData + ",";
 		for (int i = 0; i < numballs; i++) {
-			str += collisions[i];
+			str += collisionOrder[i];
 			if(i < numballs - 1)
 				str += ",";
 		}
@@ -46,8 +48,13 @@ public class parsing_data_new {
 
 	public void scan(String toParse) {
 		lineNumber++;
-		if (toParse.startsWith("<new_trial/>"))
+		if (toParse.startsWith("<new_trial/>")){
 			numberOfTrials++;
+		  for(int i=0; i< numballs; i++){
+			//collidedBallPositions[i] = "none";
+			collisionOrder[i] = 0;
+		 }
+		}
 		if (toParse.startsWith("<new_trial/>") && trials == false) {
 			trials = true;
 		} else if ((toParse.startsWith("<no_more_spheres/>") || toParse.startsWith("<balls_bypassed_user/>") ) && trials == true) {
@@ -70,6 +77,7 @@ public class parsing_data_new {
 			this.noofcoll++;
 			int index = toParse.charAt(toParse.indexOf('=') + 1) - '0';
 			collisions[index - 1] = this.noofcoll;
+			collisionOrder[this.noofcoll - 1] = index;
 		} else if (toParse.charAt(0) <= '9' && toParse.charAt(0) >= '0'
 				&& trials) {
 			if (this.noofcoll == 0) {
