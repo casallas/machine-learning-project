@@ -1,6 +1,7 @@
 /**
  * @authors Keji Hu, Ashwin Natarajan
  */
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -73,14 +74,17 @@ public class parsing_data_new {
 				&& trials) {
 			if (this.noofcoll == 0) {
 				String[] features = toParse.split(",");
-				String requiredFeatures = features[1] + "," + features [2] + "," + features[3] + "," + features[4];
+				String requiredFeatures = features[1].replace(' ', ',') + "," +
+                                          features[2].replace(" ", ",") + "," +
+		                                  features[3].replace(" ", ",") + "," +
+                                          features[4].replace(" ", ",");
 				if (firstInstanceinTrial == false){
 					firstInstanceinTrial = true;
 				ballPositionsandSizeData = features[5] + ",";
 				for(int ballsnum = 0; ballsnum < numballs; ballsnum++){
 					String ballSize = features[6 + ballsnum].split("_")[1];
 					String ballPositions = features[6 + ballsnum].split("_")[2];
-				    ballPositionsandSizeData += ballSize + "," + ballPositions.split(" ")[0] + "," + ballPositions.split(" ")[1] + "," + ballPositions.split(" ")[2];
+					ballPositionsandSizeData += ballSize + "," + ballPositions.replace(' ', ',');
 				    if(ballsnum < numballs - 1)
 					ballPositionsandSizeData += ",";
 				}
@@ -119,7 +123,7 @@ public class parsing_data_new {
 				ballsHeader = "ball1_size,ball1_0_x, ball1_0_y, ball1_0_z, ball2_size, ball2_0_x, ball2_0_y, ball2_0_z," +
 						"collision1, collision2";
 			if(numberOfBalls == 1)
-				ballsHeader = "ball1_size,ball1_0_x, ball1_0_y, ball1_0,z," +
+				ballsHeader = "ball1_size,ball1_0_x, ball1_0_y, ball1_0_z," +
 						 "collision1";
 			fw.write("total_time,head_position_0_x,head_position_0_y,head_position_0_z," +
 					"head_orientation_0_x,head_orientation_0_y,head_orientation_0_z,head_orientation_0_w,"  +
