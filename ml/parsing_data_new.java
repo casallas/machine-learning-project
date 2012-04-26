@@ -141,10 +141,10 @@ public class parsing_data_new {
 					"head_orientation_i3_x,head_orientation_i3_y,head_orientation_i3_z,head_orientation_i3_w," +
 					"wand_position_i3_x,wand_position_i3_y,wand_position_i3_z," +
 					"wand_orientation_i3_x,wand_orientation_i3_y,wand_orientation_i3_z,wand_orientation_i3_w," +
-					"head_position_i3_x,head_position_i3_y,head_position_i3_z," +
-					"head_orientation_i3_x,head_orientation_i3_y,head_orientation_i3_z,head_orientation_i3_w," +
-					"wand_position_i3_x,wand_position_i3_y,wand_position_i3_z," +
-					"wand_orientation_i3_x,wand_orientation_i3_y,wand_orientation_i3_z,wand_orientation_i3_w," +
+					"head_position_i2_x,head_position_i2_y,head_position_i2_z," +
+					"head_orientation_i2_x,head_orientation_i2_y,head_orientation_i2_z,head_orientation_i2_w," +
+					"wand_position_i2_x,wand_position_i2_y,wand_position_i2_z," +
+					"wand_orientation_i2_x,wand_orientation_i2_y,wand_orientation_i2_z,wand_orientation_i2_w," +
 					"numballs," + ballsHeader + "\n");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
