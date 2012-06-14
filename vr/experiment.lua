@@ -233,7 +233,7 @@ function runExperiment(dt)
 	local head = gadget.PositionInterface("VJHead")
 	local wand = gadget.PositionInterface("VJWand")
 
-	while repetitionsRemaining() do
+	while true do
 		worldHeadPos = head.position - osgnav.position
 		worldWandPos = wand.position - osgnav.position
 		if not trialEnded(worldHeadPos) then
@@ -241,6 +241,9 @@ function runExperiment(dt)
 			moveSpheres(dt)
 			displayHUD("missed: "..tostring(missed),osg.Vec3d(2,0.5,initialPos:z()))
 		else
+			if not repetitionsRemaining() then
+				break
+			end
 			logEntry("new_trial")
 			-- Increment the number of missed (this is just for fun)
 			missed = missed + sphereRow:getNumChildren()
