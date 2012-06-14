@@ -30,6 +30,11 @@ sphereSpeed = osg.Vec3d(0,0,1.5)
 
 positions = { "left", "center", "right" }
 
+-- preload the targets
+displayHUD("Loading models",initialPos)
+targets = { Model("assets/models/enzo10.osg"), Model("assets/models/enzo20.osg") }
+clearHUD()
+
 -- Create experimental conditions, a full nxnxn experiment
 -- The experimental condition table will look like radius1, radius2, radius3, repetitions
 expConditions = {}
@@ -110,6 +115,18 @@ function trialEnded(headPos)
 	end
 end
 
+function createTarget( pos, radius )
+	-- target model transform, we need this to position the target
+	local targetXform = Transform{
+		position = pos,
+		-- set the transform orientation to -90 in y
+		orientation = AngleAxis(Degrees(-90), Axis{0.0, 1.0, 0.0}),
+	}
+	-- Add the model to the transform
+	targetXform:addChild(targets[radius*10])
+	return targetXform
+end
+
 -- displays a random experimental condition
 -- Adds the corresponding spheres to the sphere row
 function displayRandExpCondition()
@@ -129,11 +146,10 @@ function displayRandExpCondition()
 		end
 
 		local curRad = curExpCondition[i]
-		local s = Sphere{position={curX,0,0}, radius=curRad}
+		local s = createTarget({curX,0,0},curRad)
 		-- Each sphere's name: i_radius
 		s:setName(tostring(i).."_"..tostring(curRad))
-		-- Give the spheres a material
-		s:getOrCreateStateSet():setAttribute(material)
+
 		sphereRow:addChild(s)
 	end
 	curExpCondition["repetitions"] = curExpCondition["repetitions"] - 1
