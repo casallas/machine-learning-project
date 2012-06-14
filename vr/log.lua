@@ -42,7 +42,7 @@ function writeLog(dt)
 	local head = gadget.PositionInterface("VJHead")
 	local wand = gadget.PositionInterface("VJWand")
 
-	while repetitionsRemaining() do
+	while true do
 		log_file:write(dt)
 		log_file:write(",")
 		log_file:write(tostring(head.position))
@@ -62,8 +62,6 @@ function writeLog(dt)
 		end
 		log_file:write("\n")
 		dt = Actions.waitForRedraw()
-		-- wait for 1/10 of a second
-		--dt = Actions.waitSeconds(0.1)
 	end
 	log_file:write("</experimental_data>\n")
 	log_file:write("<end_time="..os.time().."/>")
