@@ -10,6 +10,7 @@ dofile(vrjLua.findInModelSearchPath([[magicWand.lua]]))
 dofile(vrjLua.findInModelSearchPath([[osgXUtils.lua]]))
 dofile(vrjLua.findInModelSearchPath([[log.lua]]))
 dofile(vrjLua.findInModelSearchPath([[hud.lua]]))
+dofile(vrjLua.findInModelSearchPath([[soundFX.lua]]))
 
 -- Create a bunch of spheres
 numSpheres = 3
@@ -193,6 +194,9 @@ function disappearCollidedSpheres(wandPos)
 		if pointInsideSphere(wandPos,curSphere) then
 			logEntry("collision sphere="..curSphere:getName())
 			sphereRow:removeChild(curSphere)
+			--play or "trigger" the sound
+			pos = {wandPos:x(),wandPos:y(),wandPos:z()}
+			playCollisionSound( pos )
 			lastRemoved = i
 			return true
 		end
