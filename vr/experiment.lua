@@ -49,6 +49,14 @@ local enzo20 = Transform{
 targets = { enzo10, enzo20}
 print("Target models loaded")
 
+function setInitialHeight()
+	local head = gadget.PositionInterface("VJHead")
+
+	worldHeadPos = head.position - osgnav.position
+	-- Make spheres appear 35 cm below the participant's eyes
+	initialPos:set(initialPos:x(),worldHeadPos:y()-0.3,initialPos:z())
+end
+
 -- Create experimental conditions, a full nxnxn experiment
 -- The experimental condition table will look like radius1, radius2, radius3, repetitions
 expConditions = {}
@@ -279,6 +287,7 @@ function startExperiment(dt)
 		Actions.waitForRedraw()
 	end
 	clearHUD()
+	setInitialHeight()
 	numSpheres = 1
 	-- Do only five repetitions for each condition
 	numRepetitions = 5
