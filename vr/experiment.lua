@@ -257,13 +257,13 @@ function runExperiment(dt)
 	local head = gadget.PositionInterface("VJHead")
 	local wand = gadget.PositionInterface("VJWand")
 
+	displayHUD("missed: "..tostring(missed),osg.Vec3d(-1,0.5,initialPos:z()*2))
 	while true do
 		worldHeadPos = head.position - osgnav.position
 		worldWandPos = wand.position - osgnav.position
 		if not trialEnded(worldHeadPos) then
 			disappearCollidedSpheres(magicWand:getTipPos())
 			moveSpheres(dt)
-			displayHUD("missed: "..tostring(missed),osg.Vec3d(2,0.5,initialPos:z()))
 		else
 			if not repetitionsRemaining() then
 				break
@@ -271,6 +271,7 @@ function runExperiment(dt)
 			logEntry("new_trial")
 			-- Increment the number of missed (this is just for fun)
 			missed = missed + sphereRow:getNumChildren()
+			displayHUD("missed: "..tostring(missed),osg.Vec3d(-1,0.5,initialPos:z()*2))
 			sphereRow:removeChildren(0, sphereRow:getNumChildren())
 			--initialPos:x() = worldHeadPos:x()
 			sphereRow:setPosition(initialPos)
@@ -282,7 +283,7 @@ end
 
 function startExperiment(dt)
 	local btn1 = gadget.DigitalInterface("VJButton1")
-	displayHUD("Get on the isle and\nPress rear button to start!",initialPos)
+	displayHUD("Get on the isle and\nPull trigger to start!",initialPos)
 	while not btn1.pressed do
 		Actions.waitForRedraw()
 	end
@@ -301,7 +302,7 @@ function startExperiment(dt)
 	sphereRow:removeChildren(0, sphereRow:getNumChildren())
 
 	Actions.removeFrameAction(writeLog)
-	displayHUD("Trial ended\nPress rear button to start!",initialPos)
+	displayHUD("Trial ended\nPull trigger to start!",initialPos)
 	while not btn1.pressed do
 		Actions.waitForRedraw()
 	end
@@ -322,7 +323,7 @@ function startExperiment(dt)
 	-- Don't vary position for 3 spheres
 	positions = { "center" }
 	Actions.removeFrameAction(writeLog)
-	displayHUD("Trial ended\nPress rear button to start!",initialPos)
+	displayHUD("Trial ended\nPull trigger to start!",initialPos)
 	while not btn1.pressed do
 		Actions.waitForRedraw()
 	end
@@ -330,7 +331,7 @@ function startExperiment(dt)
 	numSpheres = 3
 	sphereSpeed = osg.Vec3d(0,0,1.5)
 	-- Spheres shouldn't be more than 0.75 mt appart from each other
-	maxSeparation = 0.75
+	maxSeparation = 1
 	createExperimentalConditions()
 	Actions.addFrameAction(writeLog)
 	-- give the log the chance to start
