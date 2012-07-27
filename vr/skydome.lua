@@ -7,14 +7,16 @@ vrjLua.appendToModelSearchPath(fn)
 -- Add simple lights
 dofile(vrjLua.findInModelSearchPath([[simpleLights.lua]]))
 
--- Skydome model transform, we need this to rotate -90 on x, and shift it up 2m
+-- Skydome model transform, we need this to rotate -90 on x, and shift it right 10 cm to have symmetric tiles
 skydomeXform = Transform{
-	position = {0, 2, 0},
+	position = {0.1, 0, 0},
 	-- set the transform orientation to -90 on the x (first element of Axis values)
 	orientation = AngleAxis(Degrees(-90), Axis{1.0, 0.0, 0.0}),
 }
--- Load the skydome model
-local m = Model("model/skydome11.osg")
+
+print("Loading terrain model")
+local m = Model("model/terrain.02.1.osg")
+print("Terrain model loaded")
 
 -- Add the model to the transform
 skydomeXform:addChild(m)
