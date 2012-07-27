@@ -32,9 +32,22 @@ sphereSpeed = osg.Vec3d(0,0,1.5)
 positions = { "left", "center", "right" }
 
 -- preload the targets
-displayHUD("Loading models",initialPos)
-targets = { Model("assets/models/enzo10.osg"), Model("assets/models/enzo20.osg") }
-clearHUD()
+print("Loading target models")
+local enzo = Transform{
+	-- rotate a little bit to make the model symmetric
+	orientation = AngleAxis(Degrees(10), Axis{1.0, 0.0, 0.0}),
+	Model("model/enzo10_low.osg")
+}
+local enzo10 = Transform{
+	scale = 1,
+	enzo
+}
+local enzo20 = Transform{
+	scale = 2,
+	enzo
+}
+targets = { enzo10, enzo20}
+print("Target models loaded")
 
 -- Create experimental conditions, a full nxnxn experiment
 -- The experimental condition table will look like radius1, radius2, radius3, repetitions
