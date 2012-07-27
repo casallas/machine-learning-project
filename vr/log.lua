@@ -2,6 +2,8 @@ require("Actions")
 
 log_file = nil
 
+log_prefix = "./data/"
+
 function serializeExpConditions()
 	local ans = ""
 	for k,v in pairs(expConditions) do
@@ -11,6 +13,7 @@ function serializeExpConditions()
 		end
 		ans = ans.."\n"
 	end
+	ans = ans.."<initialSpherePos="..tostring(initialPos)..">\n"
 	ans = ans.."<speed="..tostring(sphereSpeed)..">\n"
 	return ans
 end
@@ -27,7 +30,7 @@ end
 
 function writeLog(dt)
 	local start_time = os.time()
-	local file_name = tostring(start_time.."_"..numSpheres.."sph_log.txt")
+	local file_name = tostring(log_prefix..start_time.."_"..numSpheres.."sph_log.txt")
 	log_file = io.open(file_name,"w")
 	
 	logEntry("start_time="..start_time)
