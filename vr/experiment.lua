@@ -109,6 +109,9 @@ function trialEnded(headPos)
 		logEntry("no_more_spheres")
 		return true
 	elseif sphereRow:getPosition():z() > (headPos:z()+0.5) then
+		sphrowBound = sphereRow:getBound()
+		local pos = {sphrowBound:center():x(), sphrowBound:center():y(), sphrowBound:center():z()}
+		playPassSound( pos )
 		logEntry("balls_bypassed_user")
 		return true		
 	else
@@ -195,7 +198,7 @@ function disappearCollidedSpheres(wandPos)
 			logEntry("collision sphere="..curSphere:getName())
 			sphereRow:removeChild(curSphere)
 			--play or "trigger" the sound
-			pos = {wandPos:x(),wandPos:y(),wandPos:z()}
+			local pos = {wandPos:x(),wandPos:y(),wandPos:z()}
 			playCollisionSound( pos )
 			lastRemoved = i
 			return true
