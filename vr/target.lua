@@ -105,8 +105,10 @@ function Target:getWPos()
   return self.xform_pos:getWorldMatrices(RelativeTo.World).Item[1]:getTrans()
 end
 
-function Target:getD0()
-  return self.xform_pos0:getPosition():length()
+function Target:getD(toNode)
+  toNode = toNode or RelativeTo.World
+  -- Assume there's one node path between the node and xform_pos (Item[1])
+  return self.xform_pos:getWorldMatrices(toNode).Item[1]:getTrans():length()
 end
 
 function Target:getD0()
