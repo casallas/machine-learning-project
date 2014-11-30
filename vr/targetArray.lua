@@ -83,3 +83,49 @@ function TargetArray.EquilateralTriangularArray(D0)
   return ans
 end
 
+function TargetArray.HexagonalArray(D0)
+  D0 = D0 or 1
+  local ans = TargetArray:new(D0)
+  local t1 = Target:new()
+  local t2 = Target:new()
+  local t3 = Target:new()
+  local t4 = Target:new()
+  local t5 = Target:new()
+  local t6 = Target:new()
+
+  -- First arrange the first three targets in an equilateral triangle
+  t1.xform:setAttitude(AngleAxis(Degrees(-30), Axis{0, 1, 0}))
+  t1:setD0(D0)
+  t2.xform:setAttitude(AngleAxis(Degrees(30), Axis{0, 1, 0}))
+  t2:setD0(D0)
+  t3.xform:setAttitude(AngleAxis(math.atan(math.sqrt(2)), Axis{1, 0, 0}))
+  t3:setD0(D0)
+
+  tOrigin = Transform{orientation = AngleAxis(-math.atan(math.sqrt(2))/2, Axis{1, 0, 0}),
+    t1.xform,
+    t2.xform,
+    t3.xform
+  }
+
+  -- Arrange the last targets in another equilateral triangle
+  t4.xform:setAttitude(AngleAxis(Degrees(-30), Axis{0, 1, 0}))
+  t4:setD0(D0)
+  t5.xform:setAttitude(AngleAxis(Degrees(30), Axis{0, 1, 0}))
+  t5:setD0(D0)
+  t6.xform:setAttitude(AngleAxis(-math.atan(math.sqrt(2)), Axis{1, 0, 0}))
+  t6:setD0(D0)
+
+  tOrigin2 = Transform{orientation = AngleAxis(math.atan(math.sqrt(2))/4, Axis{1, 0, 0}),
+    t4.xform,
+    t5.xform,
+    t6.xform
+  }
+
+  -- Now add the two triangles to the array's root
+  ans.xform:addChild(tOrigin)
+  ans.xform:addChild(tOrigin2)
+
+  ans.targets = {t1, t2, t3, t4, t5, t6}
+  ans.goalTargets = {t1}
+  return ans
+end
