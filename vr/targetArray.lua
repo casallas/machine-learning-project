@@ -54,14 +54,6 @@ function TargetArray:resetTargets()
   end
 end
 
--- TODO check why ... (arg) is not working
-function TargetArray:addTargets(targets)
-  self.targets = targets
-  for i, t in ipairs(self.targets) do
-    self.xform:addChild(t.xform)
-  end
-end
-
 function TargetArray.EquilateralTriangularArray(D0)
   D0 = D0 or 1
   local ans = TargetArray:new(D0)
@@ -76,9 +68,15 @@ function TargetArray.EquilateralTriangularArray(D0)
   t3.xform:setAttitude(AngleAxis(math.atan(math.sqrt(2)), Axis{1, 0, 0}))
   t3:setD0(D0)
 
-  ans.xform:setAttitude(AngleAxis(-math.atan(math.sqrt(2))/2, Axis{1, 0, 0}))
+  tOrigin = Transform{orientation = AngleAxis(-math.atan(math.sqrt(2))/2, Axis{1, 0, 0}),
+    t1.xform,
+    t2.xform,
+    t3.xform
+  }
+
+  ans.xform:addChild(tOrigin)
   
-  ans:addTargets({t1, t2, t3})
+  ans.targets = {t1, t2, t3}
   ans.goalTargets = {t1}
   return ans
 end
