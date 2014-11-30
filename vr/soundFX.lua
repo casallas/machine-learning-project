@@ -32,7 +32,7 @@ function playCollisionSound( pos )
 	if colSoundHandle.isPlaying then
 		colSoundHandle:stop()
 	end
-	colSoundHandle:setPosition(pos[1],pos[2],pos[3])
+	colSoundHandle.position = Vec{pos[1],pos[2],pos[3]}
 	colSoundHandle:trigger(1)
 end
 
@@ -42,6 +42,6 @@ function playPassSound( pos )
 	if passSoundHandle.isPlaying then
 		passSoundHandle:stop()
 	end
-	passSoundHandle:setPosition(pos[1],pos[2],pos[3])
+	colSoundHandle.position = Vec{pos[1],pos[2],pos[3]}
 	passSoundHandle:trigger(1)
 end
