@@ -1,4 +1,5 @@
 -- Function to create a cylinder easily
+-- The cylinder is created along the z axis
 function Cylinder(a)
 	local pos = osg.Vec3(0.0, 0.0, 0.0)
 	if a.position then
