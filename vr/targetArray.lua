@@ -7,23 +7,42 @@ vrjLua.appendToModelSearchPath(fn)
 dofile(vrjLua.findInModelSearchPath([[target.lua]]))
 dofile(vrjLua.findInModelSearchPath([[osgXUtils.lua]]))
 
-local debug_axis_geode = Cylinder{position={0,0,1.5}, height=3, radius=0.01}
-local debug_naxis_geode = Cylinder{position={0,0,-.5}, height=1, radius=0.01}
--- Set the debug axis to black, and the negative axis to white
-debug_axis_geode:getDrawable(0):setColor(osg.Vec4(0,0,0,0))
-debug_naxis_geode:getDrawable(0):setColor(osg.Vec4(1,1,1,0))
+local wireframe_mode = osg.PolygonMode()
+wireframe_mode:setMode(osg.PolygonMode.Face.FRONT_AND_BACK, osg.PolygonMode.Mode.LINE)
 
 TargetArray = {}
-function TargetArray:new(highlightDistance)
+function TargetArray:new(highlightDistance, originRad, originColor)
   highlightDistance = highlightDistance or 1
+  originRad = originRad or .05 -- the origin radius, default is 5 cm
+  originColor = originColor or osg.Vec4f(0,1,0,1) -- the origin color, default is green
+  local originGeode = Sphere{radius = originRad, position = {0,0,0}} -- translucent sphere
+  local originGeode2 = Sphere{radius = originRad, position = {0,0,0}} -- wireframe sphere
+  originGeode.Drawable[1]:setColor(originColor)
+  originGeode2.Drawable[1]:setColor(originColor)
+  originGeode2:getOrCreateStateSet():setAttributeAndModes(wireframe_mode)
+
   local object = {
+    originGeode = originGeode,
+    originSwitch = Switch{[TransparentGroup{
+      alpha = 0.25,
+      originGeode
+      }] = false,
+      [Transform{orientation=AngleAxis(Degrees(-90), Axis{1, 0, 0}),
+      originGeode2
+      }] = false
+    },
     xform = Transform{
-      -- targets
+      -- targets,
+      -- originSwitch
     },
     targets = {}, -- All the targets in the world
     goalTargets = {}, -- The targets that should be picked
     highlightDistance = highlightDistance,
+    originColor = originColor,
+    is_displayOrigin = false,
+    is_vdebug = false
   }
+  object.xform:addChild(object.originSwitch)
   setmetatable(object, { __index = TargetArray })
   return object
 end
@@ -54,6 +73,18 @@ function TargetArray:resetTargets()
   end
 end
 
+function TargetArray:displayOrigin(on)
+  if(on == nil) then
+    self.is_displayOrigin = not self.is_displayOrigin
+  else
+    self.is_displayOrigin = on
+  end
+  if self.is_displayOrigin then
+    self.originSwitch:setAllChildrenOn()
+  else
+    self.originSwitch:setAllChildrenOff()
+  end
+end
 function TargetArray.EquilateralTriangularArray(D0)
   D0 = D0 or 1
   local ans = TargetArray:new(D0)
