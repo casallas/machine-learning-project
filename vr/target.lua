@@ -115,6 +115,18 @@ function Target:getD0()
   return self.xform_pos0:getPosition():length()
 end
 
+function Target:pointInside(wPt)
+  return (self:getWPos() - wPt):length() <= self.rad
+end
+
+function Target:setRad(rad)
+  if(targets[rad*10]) then
+    self.xform_pos:removeChild(self.mdl)
+    self.mdl = targets[rad*10]
+    self.xform_pos:addChild(self.mdl)
+    self.highlight_geode.Drawable[1].Shape.Radius = self.rad*1.1
+  end
+end
 
 function Target:setPos(pos)
   return self.xform_pos:setPosition(pos)
