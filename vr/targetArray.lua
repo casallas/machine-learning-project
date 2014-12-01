@@ -7,8 +7,16 @@ vrjLua.appendToModelSearchPath(fn)
 dofile(vrjLua.findInModelSearchPath([[target.lua]]))
 dofile(vrjLua.findInModelSearchPath([[osgXUtils.lua]]))
 
+-- Wireframe polygon mode for origin and debug spheres
 local wireframe_mode = osg.PolygonMode()
 wireframe_mode:setMode(osg.PolygonMode.Face.FRONT_AND_BACK, osg.PolygonMode.Mode.LINE)
+
+-- Debug sphere
+local debug_sphere_geode = Sphere{radius=1}
+debug_sphere_geode:getOrCreateStateSet():setAttributeAndModes(wireframe_mode)
+local debug_sphere = Transform{orientation=AngleAxis(Degrees(-90), Axis{1, 0, 0}),
+  debug_sphere_geode
+}
 
 TargetArray = {}
 function TargetArray:new(highlightDistance, originRad, originColor)
@@ -73,6 +81,18 @@ function TargetArray:resetTargets()
   end
 end
 
+function TargetArray:vdebug(on)
+  if(on == nil) then
+    self.is_vdebug = not self.is_vdebug
+  else
+    self.is_vdebug = on
+  end
+  self.xform:removeChild(debug_sphere)
+  if self.is_vdebug then
+    self.xform:addChild(debug_sphere)
+  end
+end
+
 function TargetArray:displayOrigin(on)
   if(on == nil) then
     self.is_displayOrigin = not self.is_displayOrigin
@@ -85,6 +105,11 @@ function TargetArray:displayOrigin(on)
     self.originSwitch:setAllChildrenOff()
   end
 end
+
+function TargetArray:unroot()
+  self.xform.Parent[1]:removeChild(self.xform)
+end
+
 function TargetArray.EquilateralTriangularArray(D0)
   D0 = D0 or 1
   local ans = TargetArray:new(D0)
