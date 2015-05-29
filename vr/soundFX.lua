@@ -8,6 +8,7 @@ colWavPath = vrjLua.findInModelSearchPath("sound/piuf.wav")
 
 passWavPath = vrjLua.findInModelSearchPath("sound/bouit.wav")
 
+if runbuf["local"] then
 --OpenAL allows us to spatialize the sound
 snx.changeAPI("OpenAL")
 
@@ -25,23 +26,28 @@ passSoundHandle = snx.SoundHandle(passSoundInfo.filename)
 --configure the soundHandle to use the soundInfo
 colSoundHandle:configure(colSoundInfo)
 passSoundHandle:configure(passSoundInfo)
+end
 
 -- pos 3-slot array with the position to play the collision sound, by default it's the origin
 function playCollisionSound( pos )
-	pos = pos or {0,0,0}
-	if colSoundHandle.isPlaying then
-		colSoundHandle:stop()
-	end
-	colSoundHandle.position = Vec{pos[1],pos[2],pos[3]}
-	colSoundHandle:trigger(1)
+  if runbuf["local"] then
+    pos = pos or {0,0,0}
+    if colSoundHandle.isPlaying then
+      colSoundHandle:stop()
+    end
+    --colSoundHandle.position = pos
+    colSoundHandle:trigger(1)
+  end
 end
 
 -- pos 3-slot array with the position to play the collision sound, by default it's the origin
 function playPassSound( pos )
-	pos = pos or {0,0,0}
-	if passSoundHandle.isPlaying then
-		passSoundHandle:stop()
-	end
-	colSoundHandle.position = Vec{pos[1],pos[2],pos[3]}
-	passSoundHandle:trigger(1)
+  if runbuf["local"] then
+    pos = pos or {0,0,0}
+    if passSoundHandle.isPlaying then
+      passSoundHandle:stop()
+    end
+    --passSoundHandle.position = pos
+    passSoundHandle:trigger(1)
+  end
 end

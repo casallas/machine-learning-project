@@ -1,9 +1,10 @@
 require("Text")
 
 function clearHUD()
-	if HUD then
-		RelativeTo.Room:removeChild(HUD)
-	end
+  if HUD then
+    --RelativeTo.Room:removeChild(HUD)
+    RelativeTo.World:removeChild(HUD)
+  end
 end
 
 function displayHUD(text, pos)
@@ -14,5 +15,12 @@ function displayHUD(text, pos)
 			position = {pos:x(), pos:y(), pos:z()},
 			font = Font("DroidSansBold"),
 		}
-	RelativeTo.Room:addChild(HUD)
+        RelativeTo.World:addChild(HUD)
+	--RelativeTo.Room:addChild(HUD)
 end
+
+function setHUDColor(a)
+  a = a or {0,0,0,1}
+  HUD.Drawable[1]:setColor(osg.Vec4f(unpack(a)))
+end
+

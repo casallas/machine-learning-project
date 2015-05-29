@@ -22,3 +22,10 @@ function createColoredMaterial(color)
 	material:setShininess(osg.Material.Face.FRONT, 25.0)
 	return material
 end
+
+redColor = osg.Vec4f(1,0,0,1)
+greenColor = osg.Vec4f(0,1,0,1)
+blueColor = osg.Vec4f(0,0,1,1)
+orangeColor = osg.Vec4f(1,0.6,0,1)
+whiteColor = osg.Vec4f(1,1,1,1)
+blackColor = osg.Vec4f(0,0,0,1)

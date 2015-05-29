@@ -2,4 +2,4 @@
 --METaL
 --dofile([[H:/machine-learning-project/vr/experiment.lua]])
 --mac
---dofile([[/Volumes/casallas/machine-learning-project/vr/experiment.lua]])
+--dofile([[/Users/juan/Dropbox/experiment3/vr/experiment.lua]])
